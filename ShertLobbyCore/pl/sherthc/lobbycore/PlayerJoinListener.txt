@@ -1,0 +1,217 @@
+package pl.sherthc.lobbycore;
+
+import org.bukkit.potion.*;
+import org.bukkit.entity.*;
+import org.bukkit.*;
+import org.bukkit.enchantments.*;
+import org.bukkit.inventory.meta.*;
+import java.util.*;
+import org.bukkit.inventory.*;
+import org.bukkit.event.player.*;
+import org.bukkit.event.inventory.*;
+import org.bukkit.event.*;
+import org.bukkit.event.block.*;
+import org.bukkit.event.entity.*;
+
+public class PlayerJoinListener implements Listener
+{
+    public PlayerJoinListener() {
+        super();
+    }
+    
+    @EventHandler
+    private void event(final PlayerJoinEvent event) {
+        event.setJoinMessage((String)null);
+        final Player p = event.getPlayer();
+        p.teleport(new Location(Bukkit.getWorld(Main.getInstance().getConfig().getString("World")), Main.getInstance().getConfig().getDouble("X"), Main.getInstance().getConfig().getDouble("Y"), Main.getInstance().getConfig().getDouble("Z")));
+        p.setHealth(20.0);
+        p.setFoodLevel(20);
+        p.addPotionEffect(new PotionEffect(PotionEffectType.HEAL, 999999999, 2));
+        p.playSound(p.getLocation(), Sound.LEVEL_UP, 1.0f, 1.0f);
+        p.getWorld().spigot().playEffect(p.getLocation(), Effect.COLOURED_DUST, 0, 0, 1.0f, 1.0f, 1.0f, 1.0f, 15, 25);
+        p.getWorld().spigot().playEffect(p.getLocation(), Effect.COLOURED_DUST, 0, 0, 1.0f, 1.0f, 1.0f, 1.0f, 15, 25);
+        p.getInventory().clear();
+        p.getInventory().setArmorContents((ItemStack[])null);
+        p.getInventory().setItem(3, feather());
+        p.getInventory().setItem(4, compass());
+        p.getInventory().setItem(5, feather());
+        TitleApi.sendTitle(p, ChatUtil.fixColor(Main.getInstance().getConfig().getString("JoinTitle").replace("{PLAYER}", event.getPlayer().getDisplayName())));
+        TitleApi.sendSubTitle(p, ChatUtil.fixColor(Main.getInstance().getConfig().getString("JoinSubTitle").replace("{PLAYER}", event.getPlayer().getDisplayName())));
+    }
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public static ItemStack compass() {
+        final ItemStack itemstack = new ItemStack(Material.COMPASS);
+        final ItemMeta im = itemstack.getItemMeta();
+        im.setDisplayName(ChatUtil.fixColor(Main.getInstance().getConfig().getString("CompassDisplayName")));
+        im.addEnchant(Enchantment.DURABILITY, 3, true);
+        final List<String> opis = new ArrayList<String>();
+        opis.add(ChatUtil.fixColor(Main.getInstance().getConfig().getString("CompassLore")));
+        im.setLore((List)opis);
+        itemstack.setItemMeta(im);
+        return itemstack;
+    }
+    
+    public static ItemStack feather() {
+        final ItemStack itemstackb = new ItemStack(Material.FEATHER, 1);
+        final ItemMeta imb = itemstackb.getItemMeta();
+        imb.setDisplayName(ChatUtil.fixColor(Main.getInstance().getConfig().getString("FeatherName")));
+        imb.addEnchant(Enchantment.DURABILITY, 3, true);
+        itemstackb.setItemMeta(imb);
+        return itemstackb;
+    }
+    
+    @EventHandler
+    public void onChat(final AsyncPlayerChatEvent event) {
+        if (event.getPlayer().isOp()) {
+            event.setFormat(ChatUtil.fixColor(Main.getInstance().getConfig().getString("ChatOP").replace("{PLAYER}", event.getPlayer().getDisplayName()).replace("{MESSAGE}", event.getMessage())));
+        }
+        else {
+            event.getPlayer().sendMessage(ChatUtil.fixColor(Main.getInstance().getConfig().getString("Brakperm")));
+            event.setCancelled(true);
+        }
+    }
+    
+    @EventHandler
+    public void onFoodLevelChange(final FoodLevelChangeEvent e) {
+        e.setCancelled(true);
+    }
+    
+    @EventHandler
+    public void onInteract(final PlayerInteractEvent e) {
+        @SuppressWarnings("unused")
+		final Player p = e.getPlayer();
+        if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
+            e.getPlayer().sendMessage(ChatUtil.fixColor(Main.getInstance().getConfig().getString("DenyBreakMessage")));
+        }
+        e.setCancelled(true);
+    }
+    
+    @EventHandler
+    public void ItemDrop(final PlayerDropItemEvent e) {
+        e.getPlayer().sendMessage(ChatUtil.fixColor(Main.getInstance().getConfig().getString("DenyDropMessage")));
+        e.setCancelled(true);
+    }
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	@EventHandler
+    public void onPlayerInteract(final PlayerInteractEvent event) {
+        final Player player = event.getPlayer();
+        if (player.getItemInHand() != null) {
+            final ItemStack jitem = player.getItemInHand();
+            if (jitem.getType() == Material.COMPASS) {
+                final Inventory cinv = Bukkit.createInventory((InventoryHolder)null, 27, Main.getInstance().getConfig().getString("GuiName"));
+                final ItemStack item = new ItemStack(Material.DIAMOND_SWORD, 1, (short)0);
+                final ItemMeta itemMeta = item.getItemMeta();
+                itemMeta.setDisplayName(ChatUtil.fixColor(Main.getInstance().getConfig().getString("ServerNameDisplayName")));
+                itemMeta.setLore((List)Arrays.asList(ChatUtil.fixColor(Main.getInstance().getConfig().getString("ServerNameLore"))));
+                item.setItemMeta(itemMeta);
+                cinv.clear();
+                cinv.setItem(13, item);
+                player.openInventory(cinv);
+                final ItemStack itm = player.getItemInHand();
+                final ItemMeta imb = itm.getItemMeta();
+                imb.setDisplayName(ChatUtil.fixColor(Main.getInstance().getConfig().getString("FeatherName")));
+                imb.addEnchant(Enchantment.DURABILITY, 3, true);
+                final List<String> opisb = new ArrayList<String>();
+                opisb.add(ChatUtil.fixColor(Main.getInstance().getConfig().getString("FeatherLore")));
+                imb.setLore((List)opisb);
+                itm.setItemMeta(imb);
+            }
+        }
+    }
+    
+    @EventHandler
+    public void onFlyClick(final PlayerInteractEvent e) {
+        final Player p = e.getPlayer();
+        if (p.getItemInHand() != null) {
+            final ItemStack ims = p.getItemInHand();
+            final ItemMeta imb = ims.getItemMeta();
+            imb.setDisplayName(ChatUtil.fixColor(Main.getInstance().getConfig().getString("FeatherName")));
+            imb.addEnchant(Enchantment.DURABILITY, 3, true);
+            ims.setItemMeta(imb);
+            if (ims.getType() == Material.FEATHER) {
+                if (p.isFlying()) {
+                    p.setAllowFlight(false);
+                    p.setFlying(false);
+                    p.sendMessage(ChatUtil.fixColor(Main.getInstance().getConfig().getString("FLYOFF")));
+                }
+                else {
+                    p.setAllowFlight(true);
+                    p.setFlying(true);
+                    p.sendMessage(ChatUtil.fixColor(Main.getInstance().getConfig().getString("FLYON")));
+                }
+            }
+        }
+    }
+    
+    @EventHandler
+    public void onQuit(final PlayerQuitEvent e) {
+        e.setQuitMessage((String)null);
+    }
+    
+    @EventHandler
+    public void onCSpawn(final CreatureSpawnEvent e) {
+        e.setCancelled(true);
+    }
+    
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onInventoryClick(final InventoryClickEvent e) {
+        if (e.getInventory().getName().equalsIgnoreCase(Main.getInstance().getConfig().getString("GuiName"))) {
+            e.setCancelled(true);
+        }
+    }
+    
+    @EventHandler(priority = EventPriority.LOW)
+    public void onBlockPlace(final BlockPlaceEvent e) {
+        e.getPlayer().sendMessage(ChatUtil.fixColor(Main.getInstance().getConfig().getString("DenyBlockPlaceMessage")));
+        e.setCancelled(true);
+    }
+    
+    @EventHandler
+    public void onTestEntityDamage(final EntityDamageByEntityEvent event) {
+        if (event.getDamager() instanceof Player && event.getEntity() instanceof Player) {
+            event.setCancelled(true);
+        }
+    }
+    
+    @EventHandler
+    public void onMove(final InventoryClickEvent e) {
+        e.setCancelled(true);
+    }
+    
+    @EventHandler
+    public void onEntityDamage(final EntityDamageEvent event) {
+        if (event.getCause().equals((Object)EntityDamageEvent.DamageCause.DROWNING)) {
+            event.setCancelled(true);
+        }
+    }
+    
+    @EventHandler
+    public void onEntityDamageb(final EntityDamageEvent event) {
+        if (event.getCause().equals((Object)EntityDamageEvent.DamageCause.FALL)) {
+            event.setCancelled(true);
+        }
+    }
+    
+    @EventHandler
+    public void onEntityDamagec(final EntityDamageEvent event) {
+        if (event.getCause().equals((Object)EntityDamageEvent.DamageCause.FIRE)) {
+            event.setCancelled(true);
+        }
+    }
+    
+    @EventHandler
+    public void onEntityDamaged(final EntityDamageEvent event) {
+        if (event.getCause().equals((Object)EntityDamageEvent.DamageCause.FIRE_TICK)) {
+            event.setCancelled(true);
+        }
+    }
+    
+    @EventHandler
+    public void onEntityDamagee(final EntityDamageEvent event) {
+        if (event.getCause().equals((Object)EntityDamageEvent.DamageCause.CONTACT)) {
+            event.setCancelled(true);
+        }
+    }
+}

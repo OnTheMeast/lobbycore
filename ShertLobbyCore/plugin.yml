@@ -1,0 +1,5 @@
+main: pl.sherthc.lobbycore.Main
+name: ShertLobbyCore
+version: "1.0"
+api: Spigot
+author: 000martwy_

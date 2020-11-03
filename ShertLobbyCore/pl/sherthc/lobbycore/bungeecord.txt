@@ -1,0 +1,31 @@
+package pl.sherthc.lobbycore;
+
+import org.bukkit.event.inventory.*;
+import org.bukkit.entity.*;
+import org.bukkit.plugin.*;
+import com.google.common.io.*;
+import org.bukkit.event.*;
+
+public class BungeeCord implements Listener
+{
+    public BungeeCord() {
+        super();
+    }
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	@EventHandler(priority = EventPriority.MONITOR)
+    public void efekty(final InventoryClickEvent e) {
+        if (Main.getInstance().getConfig().getString("GuiName").equalsIgnoreCase(e.getInventory().getName())) {
+            final Player p = (Player)e.getWhoClicked();
+            if (e.getSlot() == 13) {
+                e.getWhoClicked().closeInventory();
+                TitleApi.sendTitle(p, ChatUtil.fixColor(Main.getInstance().getConfig().getString("SendingToServerTitle")));
+                TitleApi.sendSubTitle(p, ChatUtil.fixColor(Main.getInstance().getConfig().getString("SendingToServerSubTitle")));
+                final ByteArrayDataOutput out = ByteStreams.newDataOutput();
+                out.writeUTF("Connect");
+                out.writeUTF(Main.getInstance().getConfig().getString("ServerName"));
+                p.sendPluginMessage((Plugin)Main.getPlugin((Class)Main.class), "BungeeCord", out.toByteArray());
+            }
+        }
+    }
+}

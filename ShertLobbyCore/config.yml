@@ -1,0 +1,33 @@
+#Swiat na ktory ma teleportowac:
+World: "world"
+X: 0
+Y: 25
+Z: 0
+#Title i SubTitle przy wejsciu mozesz uzyc {PLAYER} aby wyswietlic nick gracza:
+JoinTitle: "&8>> &6&lShert&e&lHc.plL &8<<"
+JoinSubTitle: "&8>> &7Witamy &e&o{PLAYER} &7na serwerze! &8<<"
+#Nazwa itemow przy wejsciu na serwer:
+CompassDisplayName: "&8>> &6&lSERWERY &8<<"
+CompassLore: "&8>> &7Polacz sie z glownym serwerem!"
+FeatherName: "&8>> &a&lLatanie na lobby!"
+#Ochrona na lobby:
+DenyChatMessage: "&8>> &cNa lobby chat jest wylaczony!"
+DenyBreakMessage: "&8>> &cNie mozesz niszczyc blokow na lobby!"
+DenyDropMessage: "&8>> &cNie mozesz wyrzucac itemow na lobby!"
+DenyBlockPlaceMessage: "&8>> &cNie mozesz stawiac blokow na lobby!"
+#Gui:
+#W GuiName uzywaj tylko paragrafow!!!
+GuiName: "§e§l§oSERWERY:"
+ServerNameDisplayName: "&8>> &6&lMegaDrop &8<<"
+ServerNameLore: "&8>> &7Polacz sie z serwerem &a&oMEGADROP&7!"
+#BungeeCord nazwe serwera z ktorym chcesz sie polaczyc wpisz do ServerName:
+ServerName: "megadrop"
+SendingToServerTitle: "&8>> &6&lPROBA LACZENIA... &8<<"
+SendingToServerSubTitle: "&8>> &e&oMEGADROP &8<<"
+#pisanie na chacie:
+ChatOP: "&8&l* &4&lADMINISTRATOR &8&l* &e{PLAYER} &8>> &c{MESSAGE}"
+Brakperm: "&8>> &cNie mozesz pisac na lobby!"
+#latanie:
+FLYON: "&8>> &a&oLatanie na lobby zostalo wlaczone!"
+FLYOFF: "&8>> &c&oLatanie na lobby zostalo wylaczone!"
+###[- KONIEC CONFIGU! -]###

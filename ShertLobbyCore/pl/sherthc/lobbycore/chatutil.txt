@@ -1,0 +1,14 @@
+package pl.sherthc.lobbycore;
+
+import org.bukkit.*;
+
+public class ChatUtil
+{
+    public ChatUtil() {
+        super();
+    }
+    
+    public static String fixColor(final String text) {
+        return ChatColor.translateAlternateColorCodes('&', text.replace(">>", "»").replace("<<", "«"));
+    }
+}

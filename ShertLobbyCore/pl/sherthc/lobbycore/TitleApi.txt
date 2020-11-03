@@ -1,0 +1,38 @@
+package pl.sherthc.lobbycore;
+
+import org.bukkit.entity.*;
+import org.bukkit.*;
+import org.bukkit.craftbukkit.v1_8_R3.entity.*;
+import net.minecraft.server.v1_8_R3.*;
+
+public class TitleApi
+{
+    public TitleApi() {
+        super();
+    }
+    
+    @SuppressWarnings("rawtypes")
+	public static void sendTitle(final Player player, final String text) {
+        final IChatBaseComponent chatTitle = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + text + "\",color:" + ChatColor.GOLD.name().toLowerCase() + "}");
+        final PacketPlayOutTitle title = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, chatTitle);
+        final PacketPlayOutTitle length = new PacketPlayOutTitle(5, 20, 5);
+        ((CraftPlayer)player).getHandle().playerConnection.sendPacket((Packet)title);
+        ((CraftPlayer)player).getHandle().playerConnection.sendPacket((Packet)length);
+    }
+    
+    @SuppressWarnings("rawtypes")
+	public static void sendSubTitle(final Player player, final String text) {
+        final IChatBaseComponent chatTitle = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + text + "\",color:" + ChatColor.GOLD.name().toLowerCase() + "}");
+        final PacketPlayOutTitle title = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.SUBTITLE, chatTitle);
+        final PacketPlayOutTitle length = new PacketPlayOutTitle(5, 20, 5);
+        ((CraftPlayer)player).getHandle().playerConnection.sendPacket((Packet)title);
+        ((CraftPlayer)player).getHandle().playerConnection.sendPacket((Packet)length);
+    }
+    
+    @SuppressWarnings("rawtypes")
+	public static void sendActionBar(final Player player, final String text) {
+        final IChatBaseComponent icbc = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + text + "\"}");
+        final PacketPlayOutChat bar = new PacketPlayOutChat(icbc, (byte)2);
+        ((CraftPlayer)player).getHandle().playerConnection.sendPacket((Packet)bar);
+    }
+}
